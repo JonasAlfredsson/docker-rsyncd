@@ -32,6 +32,13 @@ docker run -it --network=host \
 > I recommend using `--network=host` to get some nicer printouts in the logs,
 > but it is up to you if you prefer to port forward instead (port `873`).
 
+### Logging
+Since the service is running inside a container its output goes straight to
+`stdout` to then be caught by Docker. By default this container set the `-v`
+flag and `--log-file-format='%o %h [%a] %m (%u) %f %l'` as `CMD` arguments.
+This is very easy to override by providing your own CMD which will replace
+what is set in the [Dockerfile](./Dockerfile).
+
 ### Using chroot
 Since this image defaults to `use chroot = yes` it might be necessary to
 provide the `--cap-add=SYS_CHROOT` [flag][3] if you run into any weird error
