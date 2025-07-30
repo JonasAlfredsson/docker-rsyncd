@@ -68,12 +68,13 @@ gid = *
 ```
 
 This will make so that the rsync user, with username "jonas", gets assigned the
-system `uid`/username of "jonas" which *could* be a real system user (but does
-not need to be). In case it cannot resolve it to a system user it will default
-back to `nobody/nogroup`.
+system `uid` of "jonas". However, in contrast to the case when the `uid/gid`
+is statically assigned this share now only allows users which exists on the
+system, else it will fail with `@ERROR: invalid uid`.
 
-However, for this to work as intended the `/etc/passwd` file needs to be
-readable from within the container. This can be solved by adding the following
+Furthermore, for this to work as intended the `/etc/passwd` file needs to be
+readable from within the container, else it will not be possible for rsync to
+look up the IDs of the usernames. This can be solved by adding the following
 mounts to the Docker run command:
 
 ```
