@@ -6,6 +6,8 @@ build:
 run:
 	docker run -it --rm \
 	--network=host \
+	-v '/etc/passwd:/etc/passwd:ro' \
+	-v '/etc/group:/etc/group:ro' \
 	-v $(PWD)/examples:/etc/rsyncd.d:ro \
 	jonasal/rsync:local
 

@@ -32,6 +32,9 @@ docker run -it --network=host \
 > I recommend using `--network=host` to get some nicer printouts in the logs,
 > but it is up to you if you prefer to port forward instead (port `873`).
 
+
+## Good to Know
+
 ### Logging
 Since the service is running inside a container its output goes straight to
 `stdout` to then be caught by Docker. By default this container set the `-v`
@@ -44,6 +47,41 @@ Since this image defaults to `use chroot = yes` it might be necessary to
 provide the `--cap-add=SYS_CHROOT` [flag][3] if you run into any weird error
 messages. I did not need to, but this is here just in case.
 
+### Authorizing Users
+Through the use of the `secrets file` it is possible to create username+password
+combinations that may be used to enable authentication to the shares. The
+username and password defined here has nothing to do with the username or
+password of the user on the system (they don't even need to exist as a user on
+the system). Instead the `user` and `group` values the files/transfers will get
+is defined by the `uid` and `gid` options in the configuration. This means that
+it is possible to "impersonate" other system users if configured wrongly.
+
+While this allows us to force any connecting user to use the extremely
+restricted `nobody/nogroup` user (to protect us from unwanted access to
+sensitive files) it also means that all files will be created by the same
+user. This might not always be desired behavior so an option is to use the
+[RSYNC_USER_NAME][4] environment variable like this:
+
+```conf
+uid = %RSYNC_USER_NAME%
+gid = *
+```
+
+This will make so that the rsync user, with username "jonas", gets assigned the
+system `uid`/username of "jonas" which *could* be a real system user (but does
+not need to be). In case it cannot resolve it to a system user it will default
+back to `nobody/nogroup`.
+
+However, for this to work as intended the `/etc/passwd` file needs to be
+readable from within the container. This can be solved by adding the following
+mounts to the Docker run command:
+
+```
+docker run -it --rm
+    -v '/etc/passwd:/etc/passwd:ro' \
+    -v '/etc/group:/etc/group:ro' \
+    jonasal/rsync:local
+```
 
 
 
@@ -52,3 +90,4 @@ messages. I did not need to, but this is here just in case.
 [1]: https://linux.die.net/man/1/rsync
 [2]: https://www.man7.org/linux/man-pages/man5/rsyncd.conf.5.html#CONFIG_DIRECTIVES
 [3]: https://stackoverflow.com/a/64937200
+[4]: https://download.samba.org/pub/rsync/rsyncd.conf.html#uid
