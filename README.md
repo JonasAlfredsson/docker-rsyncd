@@ -1,4 +1,4 @@
-# docker-rsync
+# docker-rsyncd
 
 A Docker image with the [rsync][1] binary running in daemon/server mode in order
 to allow for clients to push/pull data to it.
@@ -81,7 +81,7 @@ mounts to the Docker run command:
 docker run -it --rm
     -v '/etc/passwd:/etc/passwd:ro' \
     -v '/etc/group:/etc/group:ro' \
-    jonasal/rsync:local
+    jonasal/rsyncd:local
 ```
 
 
