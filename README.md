@@ -8,6 +8,7 @@ features (like keeping permissions and owner) while limiting its access to the
 host's file system by only mounting the paths necessary. These mounts could
 also be set to read only if no files are every to be written to the share.
 
+> This container is primarily used by [this Ansible role][5].
 
 ## Usage
 
@@ -92,3 +93,4 @@ docker run -it --rm
 [2]: https://www.man7.org/linux/man-pages/man5/rsyncd.conf.5.html#CONFIG_DIRECTIVES
 [3]: https://stackoverflow.com/a/64937200
 [4]: https://download.samba.org/pub/rsync/rsyncd.conf.html#uid
+[5]: https://github.com/JonasAlfredsson/ansible-role-rsync_server
