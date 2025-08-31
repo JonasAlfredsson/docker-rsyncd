@@ -1,0 +1,54 @@
+name: "build-latest"
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - "main"
+      - "master"
+    paths:
+      - "Dockerfile"
+      - "entrypoint.sh"
+      - ".github/rsync_version.txt"
+  pull_request:
+    branches:
+      - "main"
+      - "master"
+    paths:
+      - "Dockerfile"
+      - "entrypoint.sh"
+      - ".github/rsync_version.txt"
+
+jobs:
+  docker_buildx:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Perform setup steps
+        uses: JonasAlfredsson/checkout-qemu-buildx@v2
+        with:
+          should_login: ${{ github.event_name != 'pull_request' }}
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Load the rsync version to the env
+        run: bash ".github/version_extractor.sh" >> $GITHUB_ENV
+
+      - name: Build and push all images
+        uses: docker/build-push-action@v6
+        with:
+          context: "."
+          build-args:
+            RSYNC_VERSION="=${{ env.RSYNC_VERSION }}"
+          platforms: |
+            linux/amd64
+            linux/386
+            linux/arm64
+            linux/arm/v7
+          pull: true
+          no-cache: true
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: |
+            jonasal/rsyncd:latest
+            jonasal/rsyncd:${{ env.APP_MAJOR }}
+            jonasal/rsyncd:${{ env.APP_MAJOR }}.${{ env.APP_MINOR }}
+            jonasal/rsyncd:${{ env.APP_MAJOR }}.${{ env.APP_MINOR }}.${{ env.APP_PATCH }}
