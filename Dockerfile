@@ -1,8 +1,16 @@
 FROM alpine:3.22
 LABEL maintainer="Jonas Alfredsson <jonas.alfredsson@protonmail.com>"
 
+# Make it possible to specify which version of rsync to install. If this is
+# omitted the latest available will be used.
+# NOTE: You will need to provide the strictness operator as well, like this:
+#  - RSYNC_VERSION="=3.4.1-r0"
+#  - RSYNC_VERSION=">3.4"
+#  - RSYNC_VERSION="~3"
+ARG RSYNC_VERSION
+
 RUN apk add --no-cache \
-        rsync \
+        "rsync${RSYNC_VERSION}" \
     && \
 # Create some useful folders.
     mkdir /entrypoint.d && \
