@@ -10,7 +10,7 @@ on:
       - "Dockerfile"
       - "entrypoint.sh"
       - ".github/rsync_version.txt"
-      - ".github/version_extractor.txt"
+      - ".github/version_extractor.sh"
   pull_request:
     branches:
       - "main"
@@ -19,7 +19,7 @@ on:
       - "Dockerfile"
       - "entrypoint.sh"
       - ".github/rsync_version.txt"
-      - ".github/version_extractor.txt"
+      - ".github/version_extractor.sh"
 
 jobs:
   docker_buildx:
