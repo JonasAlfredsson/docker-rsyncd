@@ -1,4 +1,4 @@
-FROM alpine:3.23
+FROM alpine:3.24
 LABEL maintainer="Jonas Alfredsson <jonas.alfredsson@protonmail.com>"
 
 # Make it possible to specify which version of rsync to install. If this is
